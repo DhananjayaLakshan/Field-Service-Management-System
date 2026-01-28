@@ -1,0 +1,36 @@
+# Node modules
+node_modules/
+.history
+
+# Environment variables
+# .env
+# .env.*  # Optional: ignore .env.production, etc.
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Compiled files
+dist/
+build/
+tmp/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# IDE-specific
+.vscode/
+.idea/
+
+# Optional: test/coverage tools
+coverage/
+nyc_output/
+jest/
