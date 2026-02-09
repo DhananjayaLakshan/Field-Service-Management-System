@@ -1,0 +1,34 @@
+@hostname = http://localhost:5000/api
+
+### Register a new user
+POST {{hostname}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "admin",
+  "email": "admin@gmail.com",
+  "password": "admin@123"  
+}
+
+### Admin login
+POST {{hostname}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com",
+  "password": "admin@123"
+}
+
+### Employee login
+POST {{hostname}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "dhana@example.com",
+  "password": "password123"
+}
+
+
+### Admin-only
+GET {{hostname}}/protected/admin-only
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzlkMmYzZmE3NDMyNTU1OTk2NmY3NCIsInJvbGUiOiJFbXBsb3llZSIsImlhdCI6MTc3MDYyNjMwOCwiZXhwIjoxNzcwNjI3MjA4fQ.dQHT6gGUUTlAeytbk5_PAeBS91mijE8ptL99Guo4qA8

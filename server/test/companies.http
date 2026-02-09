@@ -1,0 +1,75 @@
+@hostname = http://localhost:5000/api
+
+### Register a new user
+POST {{hostname}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "admin",
+  "email": "admin@gmail.com",
+  "password": "admin@123"  
+}
+
+### Admin login
+POST {{hostname}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com",
+  "password": "admin@123"
+}
+
+### Employee login
+POST {{hostname}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "dhana@example.com",
+  "password": "password123"
+}
+
+
+
+### Create a new company
+POST {{hostname}}/companies
+Content-Type: application/json
+Authorization: Bearer 
+
+{
+    "name": "I-NET Systems & Solutions (Pvt) Ltd",
+    "address": "123 Main St, Anytown, USA",
+    "addressLink": "https://www.google.com/maps?ll=6.923697,79.85034&z=21&t=m&hl=en&gl=LK&mapclient=embed&cid=11707078475898616978",
+    "contactPerson": "Dhananjaya",
+    "contactNumber": "555-123-4567",
+    "assignedUser":"698996d3d3c4526064338d1a"
+}
+
+
+
+### Get all companies 
+### must login to the system to get the token and use it in the authorization header
+GET {{hostname}}/companies
+Authorization: Bearer 
+
+
+
+### Get company by ID
+GET {{hostname}}/companies/6989a1c6b61cadf24e13ac05
+Authorization: Bearer 
+
+
+
+### Update company details
+PUT {{hostname}}/companies/6989a1c6b61cadf24e13ac05
+Content-Type: application/json
+Authorization: Bearer 
+
+{
+    "contactNumber": "555-987-6543",
+    "assignedUser":"698996d3d3c4526064338d1a"
+}
+
+
+### Delete a company
+DELETE {{hostname}}/companies/6989a1c6b61cadf24e13ac05
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ODk5NmQzZDNjNDUyNjA2NDMzOGQxYSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc3MDYyNzg3MywiZXhwIjoxNzcwNjI4NzczfQ.dWs5D6fxsKyjoZNj0zrHlTsf0GZT9mLfKr3Z4vQfSNQ
