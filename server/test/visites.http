@@ -1,0 +1,64 @@
+@hostname = http://localhost:5000/api
+
+### Admin login
+POST {{hostname}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com",
+  "password": "admin@123"
+}
+
+### Employee login
+POST {{hostname}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "dhana@example.com",
+  "password": "password123"
+}
+
+### Create a new visit
+POST {{hostname}}/visits
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ODk5NmQzZDNjNDUyNjA2NDMzOGQxYSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc3MDcxMzY1NywiZXhwIjoxNzcwNzE0NTU3fQ.gaTPeVzrVgPuS_uf_OUZxmjfdURXN9wLp9STgKqSlT8
+
+{
+  "companyId": "69899fb1b61cadf24e13abf4",
+  "arrivalTime": "2026-02-10T08:35:00Z",
+  "notes": "Routine weekly visit",
+  "signatureUrl": "https://cloud.example.com/signatures/abc.png"
+}
+
+### Get all visits
+GET {{hostname}}/visits/dashboard/current-week
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ODk5NmQzZDNjNDUyNjA2NDMzOGQxYSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc3MDcxMzQxMywiZXhwIjoxNzcwNzE0MzEzfQ.IyAMkObw8UtqVehA1a19ExzLoJpQcfsPbZYmCzMJITw
+
+### Get visit by week
+GET {{hostname}}/visits?weekStart=2026-02-10
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzlkMmYzZmE3NDMyNTU1OTk2NmY3NCIsInJvbGUiOiJFbXBsb3llZSIsImlhdCI6MTc3MDcxMjQzMiwiZXhwIjoxNzcwNzEzMzMyfQ.5X96AaEX6Kr6Em6BkRcaPaN9kDNNy7bkzfo-5ksI0hk
+
+### Get overall visits
+GET {{hostname}}/visits/overview/current-week
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ODk5NmQzZDNjNDUyNjA2NDMzOGQxYSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc3MDcxMzQxMywiZXhwIjoxNzcwNzE0MzEzfQ.IyAMkObw8UtqVehA1a19ExzLoJpQcfsPbZYmCzMJITw
+
+### Get employee-wise visits
+GET {{hostname}}/visits/overview/employee/6979d2f3fa74325559966f74
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ODk5NmQzZDNjNDUyNjA2NDMzOGQxYSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc3MDcxNDY0NywiZXhwIjoxNzcwNzE1NTQ3fQ.TJstJEk437CcnYu7LiakCEILORWbBEAxXrexNp-Javs
+
+### Get employee-wise visits
+GET {{hostname}}/visits/overview/employee/6979d2f3fa74325559966f74?weekStart=2026-02-09
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ODk5NmQzZDNjNDUyNjA2NDMzOGQxYSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc3MDcxNDY0NywiZXhwIjoxNzcwNzE1NTQ3fQ.TJstJEk437CcnYu7LiakCEILORWbBEAxXrexNp-Javs
+
+### Update visit notes
+PUT {{hostname}}/visits/698ae54377586d7c560165c6
+Content-Type: application/json
+Authorization: Bearer 
+
+{
+  "notes": "weekly visits"
+}
+
+### Delete a visit
+DELETE {{hostname}}/visits/698ae54377586d7c560165c6
+Authorization: Bearer 

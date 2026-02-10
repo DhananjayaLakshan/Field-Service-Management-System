@@ -33,7 +33,7 @@ Content-Type: application/json
 ### Create a new company
 POST {{hostname}}/companies
 Content-Type: application/json
-Authorization: Bearer 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzlkMmYzZmE3NDMyNTU1OTk2NmY3NCIsInJvbGUiOiJFbXBsb3llZSIsImlhdCI6MTc3MDcxMjU1NiwiZXhwIjoxNzcwNzEzNDU2fQ.PWvb5flDgQnnkciIZAtGSJGD6FAkXGeyNJeC62gSKF8
 
 {
     "name": "I-NET Systems & Solutions (Pvt) Ltd",
@@ -49,8 +49,7 @@ Authorization: Bearer
 ### Get all companies 
 ### must login to the system to get the token and use it in the authorization header
 GET {{hostname}}/companies
-Authorization: Bearer 
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzlkMmYzZmE3NDMyNTU1OTk2NmY3NCIsInJvbGUiOiJFbXBsb3llZSIsImlhdCI6MTc3MDcxMjU1NiwiZXhwIjoxNzcwNzEzNDU2fQ.PWvb5flDgQnnkciIZAtGSJGD6FAkXGeyNJeC62gSKF8
 
 
 ### Get company by ID
