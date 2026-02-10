@@ -21,12 +21,12 @@ Content-Type: application/json
 ### Create a new visit
 POST {{hostname}}/visits
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ODk5NmQzZDNjNDUyNjA2NDMzOGQxYSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc3MDcxMzY1NywiZXhwIjoxNzcwNzE0NTU3fQ.gaTPeVzrVgPuS_uf_OUZxmjfdURXN9wLp9STgKqSlT8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzlkMmYzZmE3NDMyNTU1OTk2NmY3NCIsInJvbGUiOiJFbXBsb3llZSIsImlhdCI6MTc3MDcxODc2NCwiZXhwIjoxNzcwNzE5NjY0fQ.oQK7I7F9NTAXXJ1AnJ0knaknv6a-0LxEXSSRe6VNVuk
 
 {
   "companyId": "69899fb1b61cadf24e13abf4",
   "arrivalTime": "2026-02-10T08:35:00Z",
-  "notes": "Routine weekly visit",
+  "notes": "Routine weekly TEST PAYMENT",
   "signatureUrl": "https://cloud.example.com/signatures/abc.png"
 }
 

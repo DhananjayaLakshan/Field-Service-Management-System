@@ -1,0 +1,34 @@
+@hostname = http://localhost:5000/api
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzlkMmYzZmE3NDMyNTU1OTk2NmY3NCIsInJvbGUiOiJFbXBsb3llZSIsImlhdCI6MTc3MDcxODkxNSwiZXhwIjoxNzcwNzE5ODE1fQ.Zz8WduD90oJf3X1K_q4oe6JHKsXc7C5SzlOyPTnUEpw
+
+### Admin login
+POST {{hostname}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com",
+  "password": "admin@123"
+}
+
+### Employee login
+POST {{hostname}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "dhana@example.com",
+  "password": "password123"
+}
+
+### GET Payments for current week
+GET {{hostname}}/payments/my/current-week
+Authorization: Bearer {{token}}
+
+### Update payments
+PUT {{hostname}}/payments/698b064d73511b81d8b4fabc
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "fromLocation":"Polonnaruwa",
+    "cost": 150
+}
