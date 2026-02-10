@@ -1,6 +1,7 @@
 const Visit = require("../models/visitModel");
 const Company = require("../models/companyModel");
 const ApiError = require("../utils/ApiError");
+const Payment = require("../models/paymentModel");
 const {
   createVisitSchema,
   updateVisitSchema,
@@ -64,6 +65,14 @@ exports.createVisit = async (req, res, next) => {
       arrivalTime: arrival,
       notes: notes || "",
       signatureUrl,
+      createdBy: req.user._id,
+    });
+
+    await Payment.create({
+      employee: req.user._id,
+      company: company._id,
+      visit: visit._id,
+      weekStart,
       createdBy: req.user._id,
     });
 
