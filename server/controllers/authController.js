@@ -157,24 +157,31 @@ exports.refreshToken = async (req, res, next) => {
 // @desc    Logout user (invalidate refresh token)
 // @route   POST /api/auth/logout
 exports.logout = async (req, res, next) => {
-  const refreshToken = req.cookies.refreshToken;
-
-  if (!refreshToken) return next(new ApiError(400, "Refresh token missing"));
-
   try {
-    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id);
+    const refreshToken = req.cookies?.refreshToken;
 
-    if (!user) return next(new ApiError(404, "User not found"));
+    // If no cookie → just return success (already logged out)
+    if (!refreshToken) {
+      return res.clearCookie("refreshToken", cookieOptions).status(200).json({
+        success: true,
+        message: "Logged out successfully",
+      });
+    }
 
-    user.refreshToken = null;
-    await user.save();
+    // Find user by refresh token (safer than verifying first)
+    const user = await User.findOne({ refreshToken });
 
+    if (user) {
+      user.refreshToken = null;
+      await user.save();
+    }
+
+    // Always clear cookie
     res.clearCookie("refreshToken", cookieOptions).status(200).json({
       success: true,
       message: "Logged out successfully",
     });
   } catch (err) {
-    next(new ApiError(403, "Invalid token"));
+    next(err);
   }
 };
