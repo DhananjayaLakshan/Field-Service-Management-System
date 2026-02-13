@@ -33,15 +33,15 @@ Content-Type: application/json
 ### Create a new company
 POST {{hostname}}/companies
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzlkMmYzZmE3NDMyNTU1OTk2NmY3NCIsInJvbGUiOiJFbXBsb3llZSIsImlhdCI6MTc3MDcxMjU1NiwiZXhwIjoxNzcwNzEzNDU2fQ.PWvb5flDgQnnkciIZAtGSJGD6FAkXGeyNJeC62gSKF8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ODk5NmQzZDNjNDUyNjA2NDMzOGQxYSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc3MDk1OTI2MCwiZXhwIjoxNzcwOTYwMTYwfQ.lJ3xe4mTNycIsMjbXnTUscYoahYBpnw_HnQeSDyzzEE
 
 {
-    "name": "I-NET Systems & Solutions (Pvt) Ltd",
-    "address": "123 Main St, Anytown, USA",
+    "name": "BrightWave Media",
+    "address": "19 Sunset Boulevard, Los Angeles, CA 90028",
     "addressLink": "https://www.google.com/maps?ll=6.923697,79.85034&z=21&t=m&hl=en&gl=LK&mapclient=embed&cid=11707078475898616978",
     "contactPerson": "Dhananjaya",
     "contactNumber": "555-123-4567",
-    "assignedUser":"698996d3d3c4526064338d1a"
+    "assignedUser":"6979d2f3fa74325559966f74"
 }
 
 
@@ -49,9 +49,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzlkMmYzZ
 ### Get all companies 
 ### must login to the system to get the token and use it in the authorization header
 GET {{hostname}}/companies
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzlkMmYzZmE3NDMyNTU1OTk2NmY3NCIsInJvbGUiOiJFbXBsb3llZSIsImlhdCI6MTc3MDcxMjU1NiwiZXhwIjoxNzcwNzEzNDU2fQ.PWvb5flDgQnnkciIZAtGSJGD6FAkXGeyNJeC62gSKF8
-
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NzlkMmYzZmE3NDMyNTU1OTk2NmY3NCIsInJvbGUiOiJFbXBsb3llZSIsImlhdCI6MTc3MDk2MjU0NiwiZXhwIjoxNzcwOTYzNDQ2fQ.4pryNtOQgY1S2gvZ1HR-wjm3fMuh6_RuZns8YfkkAPM
 ### Get company by ID
 GET {{hostname}}/companies/6989a1c6b61cadf24e13ac05
 Authorization: Bearer 

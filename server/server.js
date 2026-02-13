@@ -4,14 +4,11 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 const connectDB = require("./config/db");
-const routes = require("./routes"); // 👈 index.js in routes/
+const routes = require("./routes");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 // ===================================
 // ✅ Connect to Database
 // ===================================
@@ -20,7 +17,11 @@ connectDB();
 // ===================================
 // ✅ Middleware
 // ===================================
-app.use(express.json());
+
+// 🔥 Increase body size BEFORE routes
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
 app.use(cookieParser());
 
 app.use(
@@ -33,7 +34,7 @@ app.use(
 // ===================================
 // ✅ Routes
 // ===================================
-app.use("/api", routes); // 👈 All routes mounted under /api
+app.use("/api", routes);
 
 // ===================================
 // ✅ Global Error Handler

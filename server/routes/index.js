@@ -5,6 +5,7 @@ const userRoutes = require("./userRoutes");
 const companyRoutes = require("./companyRoutes");
 const visitRoutes = require("./visitRoutes");
 const paymentRoutes = require("./paymentRoutes");
+const uploadRoutes = require("./uploadRoutes");
 
 const router = express.Router();
 
@@ -15,5 +16,6 @@ router.use("/users", userRoutes);
 router.use("/companies", companyRoutes);
 router.use("/visits", visitRoutes);
 router.use("/payments", paymentRoutes);
+router.use("/upload", uploadRoutes);
 
 module.exports = router;
