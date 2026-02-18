@@ -8,6 +8,7 @@ const {
   getMyCurrentWeekPayments,
   updatePayment,
   deletePayment,
+  getAdminWeeklyPayments,
 } = require("../controllers/paymentController");
 
 // Employee view (current week)
@@ -22,6 +23,14 @@ router.delete(
   authMiddleware,
   authorizeRoles("Admin", "Manager"),
   deletePayment,
+);
+
+// Admin weekly fetch
+router.get(
+  "/admin",
+  authMiddleware,
+  authorizeRoles("Admin"),
+  getAdminWeeklyPayments,
 );
 
 module.exports = router;

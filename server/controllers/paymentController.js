@@ -93,3 +93,37 @@ exports.deletePayment = async (req, res, next) => {
     next(err);
   }
 };
+
+/**
+ * @desc Admin fetch payments by week + optional employee
+ * @route GET /api/payments/admin?week=2026-02-09&employee=ID
+ */
+exports.getAdminWeeklyPayments = async (req, res, next) => {
+  try {
+    const { week, employee } = req.query;
+
+    if (!week) {
+      return next(new ApiError(400, "Week is required"));
+    }
+
+    const weekStart = new Date(week);
+
+    const filter = { weekStart };
+
+    if (employee) {
+      filter.employee = employee;
+    }
+
+    const payments = await Payment.find(filter)
+      .populate("employee", "name email")
+      .populate("company", "name")
+      .populate("visit", "arrivalTime updatedAt");
+
+    res.status(200).json({
+      success: true,
+      data: payments,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
