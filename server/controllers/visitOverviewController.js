@@ -50,6 +50,7 @@ exports.getOverallCurrentWeekOverview = async (req, res, next) => {
         arrivalTime: visit.arrivalTime,
         visitedAt: visit.visitedAt,
         notes: visit.notes,
+        signatureUrl: visit.signatureUrl,
       });
     }
 
