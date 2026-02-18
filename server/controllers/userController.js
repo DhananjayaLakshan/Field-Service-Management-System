@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const ApiError = require("../utils/ApiError");
 const bcrypt = require("bcryptjs");
+const { updateUserSchema } = require("../validations/userValidation");
 
 // @desc Get all users (Admin only)
 exports.getAllUsers = async (req, res, next) => {
@@ -26,27 +27,39 @@ exports.deleteUser = async (req, res, next) => {
 
 // @desc Update user (Admin only)
 exports.updateUser = async (req, res, next) => {
-  const { name, email, password, role } = req.body;
-
   try {
+    // ✅ Validate input
+    const { error, value } = updateUserSchema.validate(req.body);
+    if (error) throw new ApiError(400, error.details[0].message);
+
     const user = await User.findById(req.params.id);
     if (!user) throw new ApiError(404, "User not found");
+
+    const { name, email, password, role } = value;
 
     // Update name
     if (name) user.name = name;
 
-    // Update email
-    if (email) user.email = email;
+    // Update email (check duplicate)
+    if (email) {
+      const existingEmail = await User.findOne({
+        email,
+        _id: { $ne: user._id },
+      });
+
+      if (existingEmail) {
+        throw new ApiError(409, "Email already in use");
+      }
+
+      user.email = email;
+    }
 
     // Update role
     if (role) {
-      if (!["Admin", "Manager", "Employee"].includes(role)) {
-        throw new ApiError(400, "Invalid role");
-      }
       user.role = role;
     }
 
-    // Update password (only if provided)
+    // Update password (if provided and not empty)
     if (password && password.trim() !== "") {
       const hashedPassword = await bcrypt.hash(password, 10);
       user.password = hashedPassword;
