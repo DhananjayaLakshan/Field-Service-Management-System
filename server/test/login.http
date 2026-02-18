@@ -5,9 +5,9 @@ POST {{hostname}}/auth/register
 Content-Type: application/json
 
 {
-  "name": "admin",
-  "email": "admin@gmail.com",
-  "password": "admin@123"  
+  "name": "Chamithu",
+  "email": "chamithu@gmail.com",
+  "password": "chamithu@123"  
 }
 
 ### Admin login

@@ -7,17 +7,12 @@ const authorizeRoles = require("../middleware/roleMiddleware");
 const {
   getAllUsers,
   deleteUser,
-  updateUserRole,
+  updateUser,
 } = require("../controllers/userController");
 
 // Admin-only routes
 router.get("/", authMiddleware, authorizeRoles("Admin"), getAllUsers);
 router.delete("/:id", authMiddleware, authorizeRoles("Admin"), deleteUser);
-router.patch(
-  "/:id/role",
-  authMiddleware,
-  authorizeRoles("Admin"),
-  updateUserRole,
-);
+router.patch("/:id", authMiddleware, authorizeRoles("Admin"), updateUser);
 
 module.exports = router;
