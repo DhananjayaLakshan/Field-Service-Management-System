@@ -24,9 +24,20 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 app.use(cookieParser());
 
+// ✅ Proper CORS Setup
+const allowedOrigins = ["http://localhost:5173", "https://support.inetsl.com"];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // allow Postman / server calls
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   }),
 );
@@ -46,5 +57,5 @@ app.use(errorHandler);
 // ===================================
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
