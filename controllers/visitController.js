@@ -7,6 +7,15 @@ const {
   updateVisitSchema,
 } = require("../validations/visitValidation");
 
+const dayjs = require("dayjs");
+const utc = require("dayjs/plugin/utc");
+const timezone = require("dayjs/plugin/timezone");
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+const APP_TIMEZONE = "Asia/Colombo";
+
 // Monday 00:00:00 UTC of the week for a date
 function getWeekStartUTC(date = new Date()) {
   const d = new Date(
@@ -38,7 +47,8 @@ exports.createVisit = async (req, res, next) => {
     const company = await Company.findById(companyId);
     if (!company) return next(new ApiError(404, "Company not found"));
 
-    const arrival = new Date(arrivalTime);
+    // const arrival = new Date(arrivalTime);
+    const arrival = dayjs.tz(arrivalTime, APP_TIMEZONE).utc().toDate();
     if (Number.isNaN(arrival.getTime())) {
       return next(new ApiError(400, "Invalid arrival time"));
     }
@@ -194,7 +204,11 @@ exports.updateVisit = async (req, res, next) => {
 
     // Update allowed fields
     if (req.body.arrivalTime) {
-      visit.arrivalTime = new Date(req.body.arrivalTime);
+      // visit.arrivalTime = new Date(req.body.arrivalTime);
+      visit.arrivalTime = dayjs
+        .tz(req.body.arrivalTime, APP_TIMEZONE)
+        .utc()
+        .toDate();
     }
     if (req.body.visitedAt) visit.visitedAt = new Date(req.body.visitedAt);
     if (typeof req.body.notes === "string") visit.notes = req.body.notes;
