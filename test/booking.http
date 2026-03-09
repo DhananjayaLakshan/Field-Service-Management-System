@@ -1,0 +1,14 @@
+@hostname = http://localhost:5000/api/bookings
+@tokan = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ODk5NmQzZDNjNDUyNjA2NDMzOGQxYSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc3MzA1MjAzOCwiZXhwIjoxNzczMDUyOTM4fQ.9l7cuhDZHM2Emdk2pAdbTuoGrBaYIo9W1qtk8tK2m94
+
+### GET all 
+GET {{hostname}}
+Authorization: Bearer {{tokan}}
+
+### GET all 
+GET {{hostname}}?paymentStatus=UNPAID
+Authorization: Bearer {{tokan}}
+
+### GET all 
+GET {{hostname}}?paymentStatus=UNPAID&page=1&limit=10
+Authorization: Bearer {{tokan}}
