@@ -25,7 +25,12 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser());
 
 // ✅ Proper CORS Setup
-const allowedOrigins = ["http://localhost:5173", "https://support.inetsl.com"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://support.inetsl.com",
+  "https://techcare.lk",
+  "https://www.techcare.lk",
+];
 
 app.use(
   cors({
