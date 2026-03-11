@@ -28,8 +28,6 @@ app.use(cookieParser());
 const allowedOrigins = [
   "http://localhost:5173",
   "https://support.inetsl.com",
-  "https://techcare.lk",
-  "https://www.techcare.lk",
 ];
 
 app.use(
