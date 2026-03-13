@@ -103,30 +103,42 @@ exports.createVisit = async (req, res, next) => {
  * @route   GET /api/visits/dashboard/current-week
  * @access  Authenticated
  */
+
 exports.getCurrentWeekDashboard = async (req, res, next) => {
   try {
     const weekStart = getWeekStartUTC(new Date());
 
-    // visits by this user in current week
-    const visits = await Visit.find({ employee: req.user._id, weekStart })
+    // 1) All companies assigned to current user
+    const assignedCompanies = await Company.find({
+      assignedUser: req.user._id,
+    }).select("name address");
+
+    const assignedCompanyIds = assignedCompanies.map((c) => c._id);
+
+    // 2) Visits made by current user in current week (for dashboard visit list)
+    const visits = await Visit.find({
+      employee: req.user._id,
+      weekStart,
+    })
       .populate(
         "company",
         "name address contactPerson contactNumber assignedUser",
       )
       .sort({ visitedAt: -1 });
 
-    // visited company ids (unique)
-    const visitedCompanyIds = new Set(
-      visits.map((v) => String(v.company?._id)),
+    // 3) Find assigned companies that were visited this week by ANY employee
+    const visitedAssignedCompanyIds = await Visit.distinct("company", {
+      weekStart,
+      company: { $in: assignedCompanyIds },
+    });
+
+    const visitedAssignedCompanyIdSet = new Set(
+      visitedAssignedCompanyIds.map((id) => String(id)),
     );
 
-    // "Required" companies for this user = assigned to them
-    const assignedCompanies = await Company.find({
-      assignedUser: req.user._id,
-    }).select("name address");
-
+    // 4) Remaining = assigned companies not visited by anyone this week
     const remainingCompanies = assignedCompanies.filter(
-      (c) => !visitedCompanyIds.has(String(c._id)),
+      (c) => !visitedAssignedCompanyIdSet.has(String(c._id)),
     );
 
     res.status(200).json({
@@ -136,8 +148,7 @@ exports.getCurrentWeekDashboard = async (req, res, next) => {
         visits,
         stats: {
           totalAssignedCompanies: assignedCompanies.length,
-          visitedAssignedCompanies:
-            assignedCompanies.length - remainingCompanies.length,
+          visitedAssignedCompanies: visitedAssignedCompanyIdSet.size,
           remainingAssignedCompanies: remainingCompanies.length,
         },
         remainingCompanies,
@@ -147,6 +158,50 @@ exports.getCurrentWeekDashboard = async (req, res, next) => {
     next(err);
   }
 };
+// exports.getCurrentWeekDashboard = async (req, res, next) => {
+//   try {
+//     const weekStart = getWeekStartUTC(new Date());
+
+//     // visits by this user in current week
+//     const visits = await Visit.find({ employee: req.user._id, weekStart })
+//       .populate(
+//         "company",
+//         "name address contactPerson contactNumber assignedUser",
+//       )
+//       .sort({ visitedAt: -1 });
+
+//     // visited company ids (unique)
+//     const visitedCompanyIds = new Set(
+//       visits.map((v) => String(v.company?._id)),
+//     );
+
+//     // "Required" companies for this user = assigned to them
+//     const assignedCompanies = await Company.find({
+//       assignedUser: req.user._id,
+//     }).select("name address");
+
+//     const remainingCompanies = assignedCompanies.filter(
+//       (c) => !visitedCompanyIds.has(String(c._id)),
+//     );
+
+//     res.status(200).json({
+//       success: true,
+//       data: {
+//         weekStart,
+//         visits,
+//         stats: {
+//           totalAssignedCompanies: assignedCompanies.length,
+//           visitedAssignedCompanies:
+//             assignedCompanies.length - remainingCompanies.length,
+//           remainingAssignedCompanies: remainingCompanies.length,
+//         },
+//         remainingCompanies,
+//       },
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 
 /**
  * @desc    Get visits for a given week (employees can read, not edit)
