@@ -6,46 +6,27 @@ const visitSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Company",
       required: true,
-      index: true,
     },
     employee: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true,
     },
 
-    // Week bucket: store the Monday 00:00:00 (UTC) of that week
-    weekStart: {
-      type: Date,
-      required: true,
-      index: true,
-    },
+    weekStart: { type: Date, required: true },
 
-    visitedAt: {
-      type: Date,
-      default: Date.now,
-      required: true,
-    },
-    arrivalTime: {
-      type: Date,
-      required: true,
-    },
-    notes: {
+    arrivalTime: { type: Date }, // set on start
+    completedAt: { type: Date }, // set on finish
+
+    notes: { type: String, default: "" },
+    signatureUrl: { type: String, default: "" },
+
+    status: {
       type: String,
-      trim: true,
-      maxlength: 2000,
-      default: "",
+      enum: ["IN_PROGRESS", "COMPLETED"],
+      default: "IN_PROGRESS",
     },
 
-    // Signature URL required to submit a visit
-    signatureUrl: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    // Optional: who created the visit record (usually same as employee)
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

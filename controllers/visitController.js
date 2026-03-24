@@ -32,6 +32,103 @@ function isSameWeekUTC(weekStartA, weekStartB) {
   return new Date(weekStartA).getTime() === new Date(weekStartB).getTime();
 }
 
+exports.startVisit = async (req, res, next) => {
+  try {
+    const { companyId } = req.body;
+
+    const company = await Company.findById(companyId);
+    if (!company) throw new ApiError(404, "Company not found");
+
+    const now = new Date();
+    const weekStart = getWeekStartUTC(now);
+
+    // Prevent multiple active visits
+    const activeVisit = await Visit.findOne({
+      employee: req.user._id,
+      status: "IN_PROGRESS",
+    });
+
+    if (activeVisit) {
+      throw new ApiError(400, "You already have an active visit");
+    }
+
+    const visit = await Visit.create({
+      company: company._id,
+      employee: req.user._id,
+      weekStart,
+      arrivalTime: now,
+      createdBy: req.user._id,
+      status: "IN_PROGRESS",
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Visit started",
+      data: visit,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.completeVisit = async (req, res, next) => {
+  try {
+    const { visitId, notes, signatureUrl } = req.body;
+
+    const visit = await Visit.findById(visitId);
+    if (!visit) throw new ApiError(404, "Visit not found");
+
+    if (visit.status === "COMPLETED") {
+      throw new ApiError(400, "Visit already completed");
+    }
+
+    if (visit.employee.toString() !== req.user._id.toString()) {
+      throw new ApiError(403, "Not your visit");
+    }
+
+    // ✅ Update visit
+    visit.notes = notes;
+    visit.signatureUrl = signatureUrl;
+    visit.completedAt = new Date();
+    visit.status = "COMPLETED";
+
+    await visit.save();
+
+    // 🔥 CREATE PAYMENT HERE (CORRECT PLACE)
+    await Payment.create({
+      employee: visit.employee,
+      company: visit.company,
+      visit: visit._id,
+      weekStart: visit.weekStart,
+      createdBy: req.user._id,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Visit completed & payment recorded",
+      data: visit,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getActiveVisits = async (req, res, next) => {
+  try {
+    const visits = await Visit.find({ status: "IN_PROGRESS" })
+      .populate("employee", "name email")
+      .populate("company", "name address")
+      .sort({ arrivalTime: -1 });
+
+    res.status(200).json({
+      success: true,
+      data: visits,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 /**
  * @desc    Create a visit (Employee can create for current week only)
  * @route   POST /api/visits

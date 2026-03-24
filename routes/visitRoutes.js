@@ -10,6 +10,9 @@ const {
   getVisitsByWeek,
   updateVisit,
   deleteVisit,
+  completeVisit,
+  startVisit,
+  getActiveVisits,
 } = require("../controllers/visitController");
 
 const {
@@ -56,6 +59,15 @@ router.delete(
   authMiddleware,
   authorizeRoles("Admin", "Manager"),
   deleteVisit,
+);
+
+router.post("/start", authMiddleware, startVisit);
+router.post("/complete", authMiddleware, completeVisit);
+router.get(
+  "/active",
+  authMiddleware,
+  authorizeRoles("Admin", "Manager"),
+  getActiveVisits,
 );
 
 module.exports = router;
