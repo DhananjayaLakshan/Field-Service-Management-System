@@ -15,53 +15,80 @@ function getWeekStartUTC(date = new Date()) {
 }
 
 /**
- * @desc    Overall weekly visit overview (company-wise)
+ * @desc    Overall weekly visit overview (company-wise) with Filters
  * @route   GET /api/visits/overview/current-week
  * @access  Authenticated (Admin / Manager / Users - read only)
  */
 exports.getOverallCurrentWeekOverview = async (req, res, next) => {
   try {
-    const weekStart = getWeekStartUTC(new Date());
+    const {
+      weekStart: queryWeekStart,
+      startDate,
+      endDate,
+      companyId,
+      employeeId,
+    } = req.query;
 
-    //Get all companies
-    const companies = await Company.find().select(
-      "name",
-      //   "name address contactPerson contactNumber assignedUser",
-    );
+    // 1. Build the Visit Match Filter
+    let visitMatchStage = {};
+    let weekStart = null;
 
-    //Get all visits for the current week
-    const visits = await Visit.find({ weekStart })
+    // Filter by exact date range OR by weekStart
+    if (startDate && endDate) {
+      visitMatchStage.arrivalTime = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate + "T23:59:59.999Z"), // End of the end date
+      };
+    } else {
+      weekStart = queryWeekStart
+        ? getWeekStartUTC(new Date(queryWeekStart))
+        : getWeekStartUTC(new Date());
+      visitMatchStage.weekStart = weekStart;
+    }
+
+    if (employeeId) visitMatchStage.employee = employeeId;
+    if (companyId) visitMatchStage.company = companyId;
+
+    // 2. Build the Company Match Filter
+    let companyMatchStage = {};
+    if (companyId) companyMatchStage._id = companyId;
+
+    // Fetch filtered companies
+    const companies = await Company.find(companyMatchStage).select("name");
+
+    // Fetch filtered visits
+    const visits = await Visit.find(visitMatchStage)
       .populate("company", "name")
-      .populate("employee", "name")
+      .populate("employee", "name email")
       .sort({ arrivalTime: 1 });
 
-    //Group visits by companyId
+    // 3. Group visits by companyId
     const visitsByCompany = {};
     for (const visit of visits) {
-      const companyId = String(visit.company._id);
+      const compId = String(visit.company._id);
 
-      if (!visitsByCompany[companyId]) {
-        visitsByCompany[companyId] = [];
+      if (!visitsByCompany[compId]) {
+        visitsByCompany[compId] = [];
       }
 
-      visitsByCompany[companyId].push({
+      visitsByCompany[compId].push({
         visitId: visit._id,
         employee: visit.employee,
         arrivalTime: visit.arrivalTime,
         visitedAt: visit.visitedAt,
-        completedAt: visit.completedAt, // ✅ Added completedAt to fix the frontend "Not Completed" display bug
+        completedAt: visit.completedAt,
         notes: visit.notes,
         signatureUrl: visit.signatureUrl,
       });
     }
 
-    //Build final response
+    // 4. Build final response arrays
     const visitedCompanies = [];
     const notVisitedCompanies = [];
 
     for (const company of companies) {
-      const companyId = String(company._id);
-      const companyVisits = visitsByCompany[companyId] || [];
+      const compId = String(company._id);
+      const companyVisits = visitsByCompany[compId] || [];
 
       if (companyVisits.length > 0) {
         visitedCompanies.push({
@@ -76,7 +103,7 @@ exports.getOverallCurrentWeekOverview = async (req, res, next) => {
     res.status(200).json({
       success: true,
       data: {
-        weekStart,
+        weekStart: weekStart || startDate, // Return standard weekStart or custom startDate
         stats: {
           totalCompanies: companies.length,
           visitedCompanies: visitedCompanies.length,
