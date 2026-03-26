@@ -78,30 +78,35 @@ exports.completeVisit = async (req, res, next) => {
     const visit = await Visit.findById(visitId);
     if (!visit) throw new ApiError(404, "Visit not found");
 
-    if (visit.status === "COMPLETED") {
-      throw new ApiError(400, "Visit already completed");
-    }
-
     if (visit.employee.toString() !== req.user._id.toString()) {
       throw new ApiError(403, "Not your visit");
     }
 
-    // ✅ Update visit
+    const now = new Date();
+
     visit.notes = notes;
     visit.signatureUrl = signatureUrl;
-    visit.completedAt = new Date();
+    visit.completedAt = now;
     visit.status = "COMPLETED";
 
     await visit.save();
 
-    // 🔥 CREATE PAYMENT HERE (CORRECT PLACE)
-    await Payment.create({
-      employee: visit.employee,
-      company: visit.company,
-      visit: visit._id,
-      weekStart: visit.weekStart,
-      createdBy: req.user._id,
-    });
+    // ✅ FIXED PAYMENT LOGIC
+    await Payment.findOneAndUpdate(
+      { visit: visit._id },
+      {
+        employee: visit.employee,
+        company: visit.company,
+        visit: visit._id,
+        weekStart: visit.weekStart,
+        createdBy: req.user._id,
+      },
+      {
+        upsert: true,
+        new: true,
+        setDefaultsOnInsert: true,
+      },
+    );
 
     res.status(200).json({
       success: true,
