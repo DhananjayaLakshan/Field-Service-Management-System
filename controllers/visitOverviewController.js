@@ -49,6 +49,7 @@ exports.getOverallCurrentWeekOverview = async (req, res, next) => {
         employee: visit.employee,
         arrivalTime: visit.arrivalTime,
         visitedAt: visit.visitedAt,
+        completedAt: visit.completedAt, // ✅ Added completedAt to fix the frontend "Not Completed" display bug
         notes: visit.notes,
         signatureUrl: visit.signatureUrl,
       });
