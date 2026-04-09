@@ -10,6 +10,10 @@ const createCompanySchema = Joi.object({
 
   addressLink: Joi.string().uri().optional().allow(""),
 
+  email: Joi.string().email().trim().required(),
+
+  status: Joi.string().valid("contract", "non-contract").optional(), // Optional here since the DB has a default value
+
   contactPerson: Joi.string().trim().min(2).max(100).required(),
 
   contactNumber: Joi.string()
@@ -32,6 +36,10 @@ const updateCompanySchema = Joi.object({
   address: Joi.string().trim().min(5).max(255).optional(),
 
   addressLink: Joi.string().uri().optional().allow(""),
+
+  email: Joi.string().email().trim().optional(),
+
+  status: Joi.string().valid("contract", "non-contract").optional(),
 
   contactPerson: Joi.string().trim().min(2).max(100).optional(),
 

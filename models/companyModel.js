@@ -16,6 +16,18 @@ const companySchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    email: {
+      type: String,
+      required: true, // Set to false if you want this to be optional
+      trim: true,
+      lowercase: true,
+    },
+    status: {
+      type: String,
+      enum: ["contract", "non-contract"],
+      default: "non-contract",
+      required: true,
+    },
     contactPerson: {
       type: String,
       required: true,

@@ -32,15 +32,46 @@ exports.createCompany = async (req, res, next) => {
 };
 
 // ==============================
-// @desc    Get all companies
+// @desc    Get all companies (PAGINATED & FILTERED)
 // @route   GET /api/companies
 // @access  Authenticated users
 exports.getAllCompanies = async (req, res, next) => {
   try {
-    const companies = await Company.find().populate("assignedUser", "name");
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
+
+    // 🔥 1. Build the Query Object based on filters
+    const { search, status } = req.query;
+    let query = {};
+
+    if (search) {
+      // Case-insensitive regex search on the company name
+      query.name = { $regex: search, $options: "i" };
+    }
+
+    if (status && status !== "all") {
+      query.status = status;
+    }
+
+    // 🔥 2. Apply query to count and fetch
+    const total = await Company.countDocuments(query);
+
+    const companies = await Company.find(query)
+      .populate("assignedUser", "name")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
     res.status(200).json({
       success: true,
       data: companies,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
     });
   } catch (error) {
     next(error);
